@@ -1,0 +1,26 @@
+[ req ]
+default_bits        = 2048
+distinguished_name  = req_distinguished_name
+attributes          = req_attributes
+prompt              = no
+req_extensions      = v3_req
+
+[ req_distinguished_name ]
+countryName=            US
+stateOrProvinceName=    WA
+localityName=           Seattle
+organizationName=       PunyCode Corp
+organizationalUnitName= PunyCode Dept
+commonName=             www.root.com
+emailAddress=           admin@root.com
+
+[ req_attributes ]
+# empty
+
+[ v3_req ]
+subjectKeyIdentifier = hash
+#authorityKeyIdentifier = keyid:always,issuer:always
+basicConstraints = critical, CA:true
+
+nameConstraints = permitted;email:xn--ww902716aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
