@@ -1,0 +1,24 @@
+[ req ]
+default_bits		= 2048
+distinguished_name	= req_distinguished_name
+attributes		    = req_attributes
+prompt			    = no
+req_extensions		= v3_req
+
+[ req_distinguished_name ]
+countryName=		    US
+stateOrProvinceName=	WA
+localityName=		    Seattle
+organizationName=	    PunyCode Corp
+organizationalUnitName= PunyCode Dept
+commonName=		        www.example.com
+#emailAddress=		    admin@example.com
+
+[ req_attributes ]
+# empty
+
+[ v3_req ]
+subjectAltName = @san_parts
+
+[ san_parts ]
+otherName = 1.3.6.1.5.5.7.8.9;UTF8:admin@xn--leaḟ.example.com
